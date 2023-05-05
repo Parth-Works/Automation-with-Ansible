@@ -47,8 +47,6 @@ backend backendnodes
 	server {{ host }} {{ hostvars[host]["ansible_default_ipv4"]["address"] }}:80 check
 {% endfor %}
 
-#userlist stats-auth
-#	group admin users admin
 
 listen stats
     bind *:8011
@@ -57,7 +55,3 @@ listen stats
     stats uri /stats
     stats refresh 1s
     stats hide-version
-   # acl AUTH http_auth(stats-auth)
-   # acl AUTH_ADMIN http_auth_group(stats-auth) admin
-   # stats http-request auth unless AUTH
-   # stats admin if AUTH_ADMIN

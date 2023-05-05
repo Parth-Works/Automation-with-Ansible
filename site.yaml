@@ -3,63 +3,94 @@
 - hosts: all
   gather_facts: yes
 
-- name: Configuring Loadbalancer
+- name: Configure HAproxy 
   hosts: HAproxy
   become: yes
   tasks:
 
-    - name: Installing HAproxy
-      apt:
-        name: haproxy
-        state: present
-        update_cache: true
+      - name: Installing HAproxy
+        apt:
+          name: haproxy
+          state: present
+          update_cache: true
+  
+      - name: gathering ip addresses
+        setup:
+              filter: ansible_default_ipv4.address
 
-
-    - name: gather server ip addresses
-      setup:
-        filter: ansible_default_ipv4.address
-
-
-    - name: copy files haproxy.cfg
-      template:
-        src: haproxy.cfg.j2
-        dest: "/etc/haproxy/haproxy.cfg"
-      notify:
-        - restart haproxy
+      - name: copy files haproxy.cfg
+        template:
+          src: haproxy.cfg.j2
+          dest: "/etc/haproxy/haproxy.cfg"
+        notify:
+          - restart haproxy
 
   handlers:
 
-    - name: restart haproxy
-      service:
-        name: haproxy
-        state: restarted
+      - name: restart haproxy
+        service:
+          name: haproxy
+          state: restarted 
 
 - hosts: webservers
   become: yes
   tasks:
-    - name: install pip
-      apt:
-        name: python3-pip
-        state: present
+      - name: install pip
+        apt:
+          name: python3-pip
+          state: present
 
-    - name: install flask
-      pip:
-        executable: pip3
-        name: flask
-        state: latest
+      - name: install flask
+        pip:
+          executable: pip3
+          name: flask
+          state: latest
+          
+      - name: createnew directory
+        file:
+                path: "/home/flask-app/"
+                state: directory
 
-    - name: create new directory
-      file:
-        path: "/home/flask-app/"
-        state: directory
+      - name: install gunicorn
+        pip:
+          executable: pip3
+          name: gunicorn
+          state: latest
 
-    - name: copy app.py to webservers
-      template:
-        src: "application2.py"
-        dest: "/home/flask-app/app.py"
+      - name: copy app.py to webservers
+        template:
+          src: "application2.py"
+          dest: "/home/flask-app/app.py"
 
-    - name: start flask app
-      shell: |
-        cd /home/flask-app/
-        export FLASK_APP=app.py
-        flask run --host=0.0.0.0 --port=80&
+      - name: start flask app
+        shell: |
+          cd /home/flask-app/ 
+          gunicorn --bind 0.0.0.0:80 app:app&
+
+- hosts: HAproxy
+  become: yes
+  tasks: 
+        
+        - name: test HAproxy 1
+          uri:
+                  url: "http://localhost/"
+                  return_content:  yes
+          register: html_content
+        - debug: 
+            msg: "{{ html_content.content }}"
+
+        - name: test HAproxy 2
+          uri:
+                  url: "http://localhost/"
+                  return_content:  yes
+          register: html_content
+        - debug:
+            msg: "{{ html_content.content }}"
+
+        - name: test HAproxy 3
+          uri:
+                  url: "http://localhost/"
+                  return_content:  yes
+          register: html_content
+        - debug:
+            msg: "{{ html_content.content }}"
