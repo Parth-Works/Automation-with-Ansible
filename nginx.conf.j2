@@ -3,30 +3,22 @@ worker_processes auto;
 pid /run/nginx.pid;
 include /etc/nginx/modules-enabled/*.conf;
 
-load_module /usr/lib/nginx/modules/ngx_stream_module.so;
-
 events {
         worker_connections 768;
         # multi_accept on;
 }
 
 stream {
-  upstream syslog_udp {
-    {% for servers in groups["webservers"] %}
-      server {{ hostvars[servers]['ansible_default_ipv4']['address'] }}:161;
-    {% endfor %}
-  }
-  server {
-    listen 1611 udp;
-    proxy_pass syslog_udp;
-    proxy_responses 0;
-  }
+
+     upstream nginx_udp {
+       {% for host in groups['webservers'] %}
+      server {{ hostvars[host]["ansible_default_ipv4"]["address"] }}:161;
+       {% endfor %}
+        }
+     server {
+        listen 1611 udp;
+        proxy_pass nginx_udp;
+        proxy_responses 1;
+   }
+
 }
-
-worker_rlimit_nofile 1000000;
-
-events {
-    worker_connections 20000;
-}
-
-## End of Config

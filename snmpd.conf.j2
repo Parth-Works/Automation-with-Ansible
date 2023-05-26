@@ -23,7 +23,6 @@ sysContact     Me <me@example.org>
 sysServices    72
 
 
-
 ###########################################################################
 # SECTION: Agent Operating Mode
 #
@@ -33,7 +32,7 @@ sysServices    72
 # master: Should the agent operate as a master agent or not.
 #   Currently, the only supported master agent type for this token
 #   is "agentx".
-#   
+#
 #   arguments: (on|yes|agentx|all|off|no)
 
 master  agentx
@@ -49,14 +48,13 @@ master  agentx
 #agentaddress  127.0.0.1,[::1]
 agentAddress udp:161,udp6:[::1]:161
 
-
 ###########################################################################
 # SECTION: Access Control Setup
 #
 #   This section defines who is allowed to talk to your running
 #   snmp agent.
 
-# Views 
+# Views
 #   arguments viewname included [oid]
 
 #  system + hrSystem groups only
@@ -79,7 +77,7 @@ rocommunity6 public default -V systemonly
 # e.g.
 # createuser authPrivUser SHA-512 myauthphrase AES myprivphrase
 #
-# This should be put into /var/lib/snmp/snmpd.conf 
+# This should be put into /var/lib/snmp/snmpd.conf
 #
 # rouser: a SNMPv3 read-only access username
 #    arguments: username [noauth|auth|priv [OID | -V VIEW [CONTEXT]]]

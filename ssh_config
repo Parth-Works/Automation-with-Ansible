@@ -8,7 +8,7 @@ HOST bastionET2598
 
 HOST HAproxyS
         User ubuntu
-        Hostname 188.95.227.179
+        Hostname 89.42.140.79
         ProxyJump bastionET2598
         IdentityFile ~/.ssh/id_rsa
 #       ProxyCommand ssh bastionNSO -W %h:%p
@@ -17,7 +17,7 @@ HOST HAproxyS
 
 HOST devA
         User ubuntu
-        Hostname 10.0.1.13
+        Hostname 10.0.1.14
         IdentityFile ~/.ssh/id_rsa
         ProxyJump bastionET2598
         ProxyCommand ssh bastionNSO -W %h:%p
@@ -26,7 +26,7 @@ HOST devA
 
 HOST devB
         User ubuntu
-        Hostname 10.0.1.12
+        Hostname 10.0.1.15
         ProxyJump bastionET2598
         IdentityFile ~/.ssh/id_rsa
         ProxyCommand ssh bastionNSO -W %h:%p
@@ -35,7 +35,7 @@ HOST devB
 
 HOST devC
         User ubuntu
-        Hostname 10.0.1.17
+        Hostname 10.0.1.12
         IdentityFile ~/.ssh/id_rsa
         ProxyJump bastionET2598
         ProxyCommand ssh bastionNSO -W %h:%p
