@@ -1,7 +1,15 @@
+HOST bastionET2598
+        IdentityFile ~/.ssh/id_rsa
+        User ubuntu
+        Hostname 188.95.226.97
+        ForwardAgent yes
+        StrictHostKeyChecking no
+        PasswordAuthentication no
+
 HOST HAproxyS
         User ubuntu
-        Hostname 103.57.72.162
-#       ProxyJump bastionNSO
+        Hostname 188.95.227.179
+        ProxyJump bastionET2598
         IdentityFile ~/.ssh/id_rsa
 #       ProxyCommand ssh bastionNSO -W %h:%p
         StrictHostKeyChecking no
@@ -9,26 +17,27 @@ HOST HAproxyS
 
 HOST devA
         User ubuntu
-        Hostname 10.0.1.18
+        Hostname 10.0.1.13
         IdentityFile ~/.ssh/id_rsa
-#       ProxyJump bastionNSO
-#        ProxyCommand ssh bastionNSO -W %h:%p
+        ProxyJump bastionET2598
+        ProxyCommand ssh bastionNSO -W %h:%p
         StrictHostKeyChecking no
         PasswordAuthentication no
 
 HOST devB
         User ubuntu
-        Hostname 10.0.1.13
-#        ProxyJump bastion
+        Hostname 10.0.1.12
+        ProxyJump bastionET2598
         IdentityFile ~/.ssh/id_rsa
-#        ProxyCommand ssh bastionNSO -W %h:%p
+        ProxyCommand ssh bastionNSO -W %h:%p
         StrictHostKeyChecking no
         PasswordAuthentication no
 
 HOST devC
         User ubuntu
-        Hostname 10.0.1.15
+        Hostname 10.0.1.17
         IdentityFile ~/.ssh/id_rsa
-#        ProxyCommand ssh bastionNSO -W %h:%p
+        ProxyJump bastionET2598
+        ProxyCommand ssh bastionNSO -W %h:%p
         StrictHostKeyChecking no
         PasswordAuthentication no

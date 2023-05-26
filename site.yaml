@@ -3,12 +3,12 @@
 - hosts: all
   gather_facts: yes
 
-- name: Configure HAproxy 
-  hosts: HAproxy
+- name: HAproxy Configuration 
+  hosts: HAproxyS
   become: yes
-  tasks:
 
-      - name: Installing HAproxy
+  tasks:
+      - name: install HAproxy
         apt:
           name: haproxy
           state: present
@@ -16,24 +16,43 @@
   
       - name: gathering ip addresses
         setup:
-              filter: ansible_default_ipv4.address
+          filter: ansible_default_ipv4.address
 
-      - name: copy files haproxy.cfg
+      - name: configuring HAproxy - haproxy.cfg
         template:
           src: haproxy.cfg.j2
           dest: "/etc/haproxy/haproxy.cfg"
         notify:
           - restart haproxy
 
-  handlers:
+      - name: install Nginx
+        apt:
+          name: nginx
+          state: latest
+          update_cache: true
 
+      - name: configuring UDP loadbalancing - nginx.conf 
+        template:
+          src: nginx.conf.j2
+          dest: "/etc/nginx/nginx.conf"
+
+          #      - name: restarting nginx
+          #        service:
+          #        name: nginx
+          #          state: restarted
+          #          enabled: yes   
+         
+  handlers:  
       - name: restart haproxy
         service:
           name: haproxy
           state: restarted 
 
-- hosts: webservers
+
+- name: Webservers Configuration
+  hosts: webservers
   become: yes
+
   tasks:
       - name: install pip
         apt:
@@ -46,10 +65,10 @@
           name: flask
           state: latest
           
-      - name: createnew directory
+      - name: creating new directory for flask-app
         file:
-                path: "/home/flask-app/"
-                state: directory
+          path: "/home/flask-app/"
+          state: directory
 
       - name: install gunicorn
         pip:
@@ -57,40 +76,30 @@
           name: gunicorn
           state: latest
 
-      - name: copy app.py to webservers
+      - name: install snmpd
+        apt:
+          name: snmpd
+          state: present
+          update_cache: true
+
+      - name: configuring server response - app.py
         template:
           src: "application2.py"
           dest: "/home/flask-app/app.py"
 
-      - name: start flask app
+      - name: configuring snmpd - snmpd.conf
+        template:
+          src: snmpd.conf.j2
+          dest: "/etc/snmp/snmpd.conf"
+
+      - name: restarting snmpd
+        service:
+          name: snmpd
+          state: restarted
+          enabled: yes
+
+      - name: run flask app
         shell: |
           cd /home/flask-app/ 
           gunicorn --bind 0.0.0.0:80 app:app&
 
-- hosts: HAproxy
-  become: yes
-  tasks: 
-        
-        - name: test HAproxy 1
-          uri:
-                  url: "http://localhost/"
-                  return_content:  yes
-          register: html_content
-        - debug: 
-            msg: "{{ html_content.content }}"
-
-        - name: test HAproxy 2
-          uri:
-                  url: "http://localhost/"
-                  return_content:  yes
-          register: html_content
-        - debug:
-            msg: "{{ html_content.content }}"
-
-        - name: test HAproxy 3
-          uri:
-                  url: "http://localhost/"
-                  return_content:  yes
-          register: html_content
-        - debug:
-            msg: "{{ html_content.content }}"
