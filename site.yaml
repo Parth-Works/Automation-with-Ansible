@@ -4,7 +4,7 @@
   gather_facts: yes
 
 - name: HAproxy Configuration 
-  hosts: HAproxyS
+  hosts: HAproxy
   become: yes
 
   tasks:
