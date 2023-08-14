@@ -1,15 +1,16 @@
 import flask
 import time
 import socket
-import os
 
-os_info = os.uname()
 h_name = socket.gethostname()
-IP_addres = socket.gethostbyname(h_name)
+IP_address = socket.gethostbyname(h_name)
 
 app = flask.Flask(__name__)
 
 @app.route('/')
 def index():
     Time= time.strftime("%H:%M:%S")
-    return Time+" This Service is from the Host:  "+os_info+"  "+h_name+" ("+IP_addres+"). \n"
+    client_port = str(flask.request.environ.get('REMOTE_PORT'))
+    hostname = h_name
+    host_IP = IP_address
+    return Time+" This Service is from the Host: "+hostname+" ("+host_IP+") :" +client_port+".\n"
