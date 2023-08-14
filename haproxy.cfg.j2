@@ -49,9 +49,12 @@ backend backendnodes
 
 
 listen stats
-    bind *:8011
-    
-    stats enable
-    stats uri /stats
-    stats refresh 1s
-    stats hide-version
+        bind *:8011
+
+        stats enable
+        stats uri /stats
+        stats refresh 1s
+        stats hide-version
+        stats realm HAProxy\ Statistics
+        {% set haproxy_stats_password = lookup('file', 'uipassword') %}
+        stats auth admin:{{ haproxy_stats_password }}
