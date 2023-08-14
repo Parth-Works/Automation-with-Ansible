@@ -1,11 +1,4 @@
 ---
-- name: clear environment
-  hosts: all
-  become: yes
-  tasks:
-      - name: Kill ansible processes
-        command: pkill -f 'ansible'
-        ignore_errors: yes  # Ignore errors in case there are no matching processes
 
 - hosts: all
   gather_facts: yes
