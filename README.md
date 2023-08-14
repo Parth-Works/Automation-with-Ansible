@@ -24,6 +24,8 @@ ansible-playbook -i hosts site.yaml
 
 On success of the running of above code, Through Bastion Host, we use CURL command on HAproxy server, to get response from one of the webserver.(We have used roundrobin algorithm for the loadbalancing in HAproxy server.).
 
-NGinx as Loadbalancer: additionally Nginx is used as a load balancer to handle SNMP monitoring of backend nodes. The SNMP collected data can be accessed through HAproxy server IP:8011port with '/server_stats'
+NGinx as Loadbalancer: 
+
+Additionally, Nginx is used as a load balancer to handle SNMP monitoring of backend nodes. The SNMP collected data can be accessed through HAproxy server IP:8011port with '/server_stats'. This data is only accessible to admin via password authentication.
 
  
