@@ -76,39 +76,18 @@
         apt:
            update_cache: yes
            cache_valid_time: 7200
-  
-      - name: install pip
-        apt:
-          name: python3-pip
-          state: present
 
-      - name: install flask
-        pip:
-          executable: pip3
-          name: flask
-          state: latest
           
       - name: creating new directory for flask-app
         file:
           path: "/home/flask-app/"
           state: directory
 
-      - name: install gunicorn
-        pip:
-          executable: pip3
-          name: gunicorn
-          state: latest
-
       - name: install snmpd
         apt:
           name: snmpd
           state: present
           update_cache: true
-
-      - name: copying the server response file - app.py
-        template:
-          src: application2.py
-          dest: "/home/flask-app/app.py"
 
       - name: copying snmpd configuration file - snmpd.conf
         template:
@@ -121,8 +100,37 @@
           state: restarted
           enabled: yes
 
-      - name: run flask app
-        shell: |
-          cd /home/flask-app/ 
-          gunicorn --bind 0.0.0.0:80 app:app&
+      - name: install pip
+        apt:
+          name: python3-pip
+          state: present
+
+      - name: install flask
+        pip:
+          executable: pip3
+          name: flask
+          state: latest
+
+      - name: copying the server response file - app.py
+        copy:
+          src: application2.py
+          dest: /home/flask-app/app.py
+
+      - name: Create Systemd Service
+        template:
+          src: response.j2
+          dest: /etc/systemd/system/response.service
+        notify:
+          - Reload Systemd
+
+      - name: Start and Enable Service
+        systemd:
+          name: response.service
+          state: started
+          enabled: yes
+
+  handlers:
+    - name: Reload Systemd
+      systemd:
+        daemon_reload: yes
 
