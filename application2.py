@@ -22,3 +22,6 @@ def index():
     return (Time + " This Service is from the Host: " + hostname +
             " (" + host_IP + "):" + client_port + ".\n" +
             "Server Uptime: " + uptime_info + ".\n")
+
+if _name_ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
