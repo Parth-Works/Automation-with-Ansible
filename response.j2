@@ -1,0 +1,14 @@
+[Unit]
+Description=flask app service
+After=network.target
+
+[Service]
+User=ubuntu
+ExecStart=/usr/bin/python3 {{ app_script_path }}
+Restart=always
+RestartSec=5
+TimeoutSec=60
+RuntimeMaxSec=infinity
+
+[Install]
+WantedBy=multi-user.target
