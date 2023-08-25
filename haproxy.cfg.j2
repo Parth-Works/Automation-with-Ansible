@@ -71,5 +71,5 @@ listen stats
         stats uri /stats
         stats refresh 1s
         stats hide-version
-        {% set haproxy_stats_password = lookup('file', 'uipassword') %}
-        stats auth admin:{{ haproxy_stats_password }}
+#        {% set haproxy_stats_password = lookup('file', 'uipassword') %}
+        stats auth admin:{{ uipassword_var }}
