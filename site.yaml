@@ -23,6 +23,21 @@
       - name: gathering ip addresses
         setup:
           filter: ansible_default_ipv4.address
+          
+      - name: copying uipassword
+        template:
+          src: uipassword
+          dest: "/etc/haproxy/uipassword"
+        become: true
+
+      - name: Read contents of uipassword file
+        ansible.builtin.slurp:
+          src: /etc/haproxy/uipassword
+        register: uipassword_content
+        
+      - name: Convert content to string
+        set_fact:
+          uipassword_var: "{{ uipassword_content.content | b64decode | string }}"
 
       - name: copying HAproxy configuration file - haproxy.cfg
         template:
