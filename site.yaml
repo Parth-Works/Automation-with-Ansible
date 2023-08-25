@@ -131,6 +131,10 @@
           src: application2.py
           dest: /home/flask-app/app.py
 
+      - name: Store the script path
+        set_fact:
+          app_script_path: "/home/flask-app/app.py"
+
       - name: Create Systemd Service
         template:
           src: response.j2
